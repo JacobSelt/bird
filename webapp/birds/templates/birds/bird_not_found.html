@@ -1,0 +1,21 @@
+{% extends 'base.html' %} {% block content %} {% load static %}
+
+<div class="wrapper">
+  <!-- HEADER -->
+  <div>
+    <h2 class="mb-3 text-center">Vogelname: {{bird_name}}</h2>
+    <img
+      src="{% static error_img_path %}"
+      alt="Error Bird Image"
+      style="width: 200px; height: 200px"
+      class="rounded mx-auto d-block"
+    />
+    <hr />
+    <p>
+      Dieser Vogel wurde leider nicht in der Liste der verfügbaren Vögel
+      gefunden. Stimmt deine Eingabe oder liegt ein technischer Fehler vor?
+    </p>
+  </div>
+</div>
+
+{%endblock%}

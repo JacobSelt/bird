@@ -1,0 +1,21 @@
+{% extends 'base.html' %} 
+{% block content %} 
+{% load static %}
+
+{% comment %} 2: bird_name {% endcomment %}
+{% comment %} 3: recorded_datetime {% endcomment %}
+
+<div class="wrapper">
+    <h2 class="mb-4 text-center">Hier sind alle Vögel aufgelistet, die hier jemals gezwitschert haben:</h2>
+    <div class="my-2 bird-field py-2 px-2">
+        {% for bird in birds %}
+            <div class="text" onclick='location.href="{% url 'bird_detail' bird.2%}";' style="cursor: pointer;">
+                <div style="float: left; font-weight: bold; font-size: 20px;">{{ bird.2 }}</div>
+                <div class="mt-1" style="float: right; color: grey;">{{ bird.3 }}</div>
+                <br><br>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{%endblock%}

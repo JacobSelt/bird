@@ -1,0 +1,129 @@
+@font-face {
+    font-family: 'Quicksand';
+    src: local('Quicksand'),
+        url('../../fonts/Quicksand-VariableFont_wght.ttf') format("truetype");
+}
+
+body {
+    background-color: rgb(228, 228, 228);
+    font-family: 'Quicksand', sans-serif;
+}
+
+.bird-test {
+    position: relative;
+    overflow: hidden;
+    background-color: #f3f3f3;
+    height: 220px;
+    border-radius: 10px;
+    z-index: -1;
+}
+
+.bird-test img {
+    position: absolute;
+    border-radius: 50%;
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    left: -60px;
+    top: -40px;
+    z-index: -2;
+}
+
+.bird-detail-header {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    background-color: rgb(243,
+        243,
+        243);
+    border-radius: 5px;
+    color: rgb(0, 0, 0);
+    text-align: right;
+    font-size: 2.4rem;
+    line-height: 30px;
+    padding: 5px 10px 5px 5px;
+    margin-bottom: 0px;
+}
+
+.info {
+    overflow: hidden;
+    background-color: rgb(243, 243, 243);
+    border-radius: 10px;
+}
+
+.info svg {
+    float: left;
+    flex: 1;
+    margin: 5px 20px 5px 5px;
+}
+
+.info-text {
+    color: black;
+    margin-top: 5px;
+}
+
+.info-link {
+    color: #61c0b0;
+}
+
+.info-link:hover,
+.info-link:active {
+    color: #4f9b8e;
+}
+
+.bird-field {
+    overflow: hidden;
+    background-color: rgb(243, 243, 243);
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+}
+
+.bird-field img{
+    border-radius: 25%;
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    margin: 5px 20px 5px 5px;
+    float: left;
+    flex: 1;
+}
+
+.bird-name {
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.bird-field p {
+    margin-bottom: 3px;
+}
+
+.count-birds {
+    float: right;
+    border: 1px solid black;
+    border-radius: 25%;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #dbfdf8;
+    padding: 8px 8px 0px 0px;
+    z-index: 100;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.wrapper {
+    margin: 20px 10px 0px 10px;
+}
+
+@media (min-width: 1000px) and (max-width: 5000px) {
+    .wrapper {
+        width: 50%;
+        margin-right: 25%; 
+        margin-left: 25%;
+    }
+
+}

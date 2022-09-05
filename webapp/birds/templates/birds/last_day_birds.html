@@ -1,0 +1,21 @@
+{% extends 'base.html' %} 
+{% block content %} 
+{% load static %}
+
+<div class="wrapper">
+  <div>
+    <h2 class="text-center">Alle Vögel der letzten 24h</h2>
+    <br />
+  </div>
+  {% if birds %}
+    {% autoescape off %} 
+    {{ plot_div }} 
+    {% endautoescape %} 
+  {% else  %}
+    <div>
+      <p>In den letzten 24 Stunden haben leider keine Vögel gezwitscheret :(</p>
+    </div>
+  {% endif %}
+</div>
+
+{%endblock%}

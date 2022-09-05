@@ -1,0 +1,132 @@
+[
+    {
+        "model": "birds.bird",
+        "pk": 1,
+        "fields": {
+            "bird_id": 39,
+            "bird_name": "Mönchsgrasmücke",
+            "recorded_datetime": "2022-06-02T12:30:24",
+            "probability": 0.8
+        }
+    },
+    {
+        "model": "birds.bird",
+        "pk": 2,
+        "fields": {
+            "bird_id": 20,
+            "bird_name": "Buchfink",
+            "recorded_datetime": "2022-06-03T12:30:24",
+            "probability": 0.8
+        }
+    },
+    {
+        "model": "birds.bird",
+        "pk": 3,
+        "fields": {
+            "bird_id": 39,
+            "bird_name": "Haussperling",
+            "recorded_datetime": "2022-06-04T12:30:24",
+            "probability": 0.8
+        }
+    },
+    {
+        "model": "birds.bird",
+        "pk": 4,
+        "fields": {
+            "bird_id": 39,
+            "bird_name": "Grünspecht",
+            "recorded_datetime": "2022-06-01T12:30:24",
+            "probability": 0.8
+        }
+    },
+    {
+        "model": "birds.bird",
+        "pk": 5,
+        "fields": {
+            "bird_id": 39,
+            "bird_name": "Kohlmeise",
+            "recorded_datetime": "2022-07-05T12:30:24",
+            "probability": 0.8
+        }
+    },
+    {
+        "model": "birds.bird",
+        "pk": 6,
+        "fields": {
+            "bird_id": 39,
+            "bird_name": "Gimpel",
+            "recorded_datetime": "2022-07-03T12:30:24",
+            "probability": 0.8
+        }
+    },
+    {
+        "model": "birds.bird",
+        "pk": 7,
+        "fields": {
+            "bird_id": 39,
+            "bird_name": "Gimpel",
+            "recorded_datetime": "2022-07-24T12:30:24",
+            "probability": 0.8
+        }
+    },
+    {
+        "model": "birds.bird",
+        "pk": 8,
+        "fields": {
+            "bird_id": 39,
+            "bird_name": "Gimpel",
+            "recorded_datetime": "2022-07-24T11:30:24",
+            "probability": 0.8
+        }
+    },
+    {
+        "model": "birds.bird",
+        "pk": 9,
+        "fields": {
+            "bird_id": 39,
+            "bird_name": "Gimpel",
+            "recorded_datetime": "2022-07-24T10:30:24",
+            "probability": 0.8
+        }
+    },
+    {
+        "model": "birds.bird",
+        "pk": 10,
+        "fields": {
+            "bird_id": 39,
+            "bird_name": "Gimpel",
+            "recorded_datetime": "2022-07-24T02:20:24",
+            "probability": 0.8
+        }
+    },
+    {
+        "model": "birds.bird",
+        "pk": 11,
+        "fields": {
+            "bird_id": 20,
+            "bird_name": "Buchfink",
+            "recorded_datetime": "2022-07-24T08:30:24",
+            "probability": 0.8
+        }
+    },
+    {
+        "model": "birds.bird",
+        "pk": 12,
+        "fields": {
+            "bird_id": 20,
+            "bird_name": "Buchfink",
+            "recorded_datetime": "2022-07-24T05:30:24",
+            "probability": 0.8
+        }
+    },
+    {
+        "model": "birds.bird",
+        "pk": 13,
+        "fields": {
+            "bird_id": 20,
+            "bird_name": "Buchfink",
+            "recorded_datetime": "2022-07-23T20:30:24",
+            "probability": 0.8
+        }
+    }
+]
