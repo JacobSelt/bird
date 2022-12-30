@@ -21,7 +21,7 @@ def latest_birds(request):
     """Show the latest birds"""
 
     # TODO: when deploying change the hour count to 24
-    birds = Bird.objects.filter(recorded_datetime__gt=get_date(10000))
+    birds = Bird.objects.filter(recorded_datetime__gt=get_date(100000))
     birds = birds.order_by('-recorded_datetime')
     
     # The birds who sing for several times in a row should be aggregated in the
@@ -137,7 +137,7 @@ def bird_detail(request, bird_name):
                             y=df.bird_name,
                             line_shape='linear')
 
-        layout = go.Layout(xaxis={'title': 'Stunden', "ticksuffix": "H"},
+        layout = go.Layout(xaxis={'title': 'Uhrzeit', "ticksuffix": ":00"},
                            yaxis={'title': 'Häufigkeit'},
                            hovermode='x',
                            margin={'t': 20, 'b': 10, 'r': 10, 'l': 20},

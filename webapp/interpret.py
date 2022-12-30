@@ -5,6 +5,9 @@ import os
 import django
 import datetime
 
+from dotenv import load_dotenv
+load_dotenv()
+
 # Set the django settings, so this script can access the django models
 os.environ['DJANGO_SETTINGS_MODULE'] = 'webapp.settings'
 django.setup()
