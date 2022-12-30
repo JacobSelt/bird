@@ -4,21 +4,27 @@
 
 <div class="wrapper">
     <h2 class="mb-4 text-center">Hier sind die Vögel der letzten Stunde aufgelistet:</h2>
-    {% for bird in birds %}
-        <div class="my-2 bird-field" onclick='location.href="{% url 'bird_detail' bird.bird_name%}";' style="cursor: pointer;">
-            <img src="{% static bird.image_path %}" alt="{{bird.bird_name}}">
-            <div class="text">
-                <p class="bird-name">{{ bird.bird_name }}</p>
-                <p class="bird-date">{{ bird.recorded_datetime }}</p>
-                <p style="color: grey">{{ bird.probability|truncatewords:4 }}</p>
-                {% if bird.quan > 1 %}
-                    <div class="count-birds">
-                        {{bird.quan}}
-                    </div>
-                {% endif %}
+    {% if birds %}
+        {% for bird in birds %}
+            <div class="my-2 bird-field" onclick='location.href="{% url 'bird_detail' bird.bird_name%}";' style="cursor: pointer;">
+                <img src="{% static bird.image_path %}" alt="{{bird.bird_name}}">
+                <div class="text">
+                    <p class="bird-name">{{ bird.bird_name }}</p>
+                    <p class="bird-date">{{ bird.recorded_datetime }}</p>
+                    <p style="color: grey">{{ bird.probability|truncatewords:4 }}</p>
+                    {% if bird.quan > 1 %}
+                        <div class="count-birds">
+                            {{bird.quan}}
+                        </div>
+                    {% endif %}
+                </div>
             </div>
+        {% endfor %}
+    {% else %}
+        <div>
+            <p>In der letzten Stunde haben leider keine Vögel gezwitschert :(</p>
         </div>
-    {% endfor %}
+    {% endif %}
 </div>
 
 {%endblock%}

@@ -1,9 +1,10 @@
-from django.utils import timezone
+from django.utils.timezone import make_aware
 import time
 import subprocess
 import os
 import django
 import datetime
+from pydub import AudioSegment
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -52,7 +53,24 @@ def get_time_recorded(file_name: str, recording_start: int) -> datetime.datetime
         datetime.timedelta(seconds=RECORD_INTERVAL_TIME) + \
         datetime.timedelta(seconds=recording_start)
     
-    return date
+    return make_aware(date)
+
+def save_audio_snippet(file_name: str, recording_start: int, recording_end: int, bird_name: str):
+    newAudio = AudioSegment.from_wav(f"{INPUT_DIR}/{file_name}")
+    newAudio = newAudio[(recording_start * 1000):(recording_end * 1000)]
+    newAudio.export(
+        f"birds/static/recordings_birds/{bird_name}.mp3", format="mp3")
+
+    # sampleRate, waveData = wavfile.read(f"{INPUT_DIR}/{file_name}")
+    # startSample = int( recording_start * sampleRate )
+    # endSample = int( recording_end * sampleRate )
+    # wavfile.write(f"../recordings/recordings_birds/{bird_name}.wav", sampleRate, waveData[startSample:endSample])
+
+
+def check_if_bird_recording_exist_with_prob(bird_name: str, probability: float) -> bool:
+    #TODO: Is the searching with Django or this approach faster?
+    with open("../recordings/recordings_birds/recordings_birds_prob.csv", "w") as file:
+        birds = file.read().split("\n")
 
 
 def main():
@@ -88,11 +106,12 @@ def main():
                     line = line.split("\t")
                     if line[0] != "" and float(line[9]) > 0.6:
                         birds.append({
-                            "bird": line[8],
+                            "name": translate_bird(line[8]),
                             "prob": line[9],
-                            "start": line[3],
-                            "end": line[4],
-                            "datetime": get_time_recorded(file_in_dir, int(float(line[3])))
+                            "start": int(float(line[3])),
+                            "end": int(float(line[4])),
+                            "datetime": get_time_recorded(file_in_dir, int(float(line[3]))),
+                            "file_name": f"{file_in_dir[0:19]}.wav",
                         })
 
             # Remove the output folders
@@ -101,10 +120,18 @@ def main():
         # Make django Bird instances from the bird list
         for bird in birds:
             bird_obj = Bird(bird_id=-1,
-                            bird_name=translate_bird(bird["bird"]),
+                            bird_name=bird["name"],
                             recorded_datetime=bird["datetime"],
                             probability=bird["prob"])
             bird_obj.save()
+
+            # Save the audio file if the probability of the recording is the highest ever
+            if not Bird.objects.filter(bird_name=bird["name"]).filter(probability__gt=bird["prob"]):
+                # TODO: Change the filter mechanism to a list
+                save_audio_snippet(bird["file_name"], bird["start"], bird["end"], bird["name"])
+            else:
+                pass
+
 
         # Delete the ANALYZED input sound files
         # The first 18 chars of the output files are the same as the input file names

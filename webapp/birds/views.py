@@ -21,7 +21,7 @@ def latest_birds(request):
     """Show the latest birds"""
 
     # TODO: when deploying change the hour count to 24
-    birds = Bird.objects.filter(recorded_datetime__gt=get_date(100000))
+    birds = Bird.objects.filter(recorded_datetime__gt=get_date(24))
     birds = birds.order_by('-recorded_datetime')
     
     # The birds who sing for several times in a row should be aggregated in the
@@ -158,7 +158,8 @@ def bird_detail(request, bird_name):
         'bird_pic_url': f"birds/{bird_name}.jpg",
         'bird_name': bird_name,
         'last_birds': last_birds,
-        'plot_div': plot_div
+        'plot_div': plot_div,
+        'bird_audio': f"recordings_birds/{bird_name}.mp3",
     }
 
     return render(request, "birds/bird_detail.html", context=context)

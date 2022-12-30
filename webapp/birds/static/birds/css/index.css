@@ -100,7 +100,7 @@ body {
 
 .count-birds {
     float: right;
-    border: 1px solid black;
+    border: 1px solid rgb(145, 145, 145);
     border-radius: 25%;
     height: 40px;
     width: 40px;
@@ -108,10 +108,10 @@ body {
     position: absolute;
     top: -8px;
     right: -8px;
-    background-color: #dbfdf8;
+    background-color: #f7f7f7;
     padding: 8px 8px 0px 0px;
     z-index: 100;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: 20px;
 }
 
