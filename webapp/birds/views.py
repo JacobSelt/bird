@@ -56,7 +56,7 @@ def latest_birds(request):
 
 
 def last_day(request):
-    birds = Bird.objects.filter(recorded_datetime__gt=get_date(100))
+    birds = Bird.objects.filter(recorded_datetime__gt=get_date(24)).order_by("-bird_name")
 
     data = {"Vogel": [bird.bird_name for bird in birds],
             "Date": [bird.recorded_datetime for bird in birds]}
