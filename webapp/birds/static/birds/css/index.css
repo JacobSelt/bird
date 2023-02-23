@@ -75,8 +75,8 @@ body {
     overflow: hidden;
     background-color: rgb(243, 243, 243);
     border-radius: 10px;
-    cursor: pointer;
     position: relative;
+    padding: 2px 10px 2px 2px;
 }
 
 .bird-field img{
@@ -86,7 +86,7 @@ body {
     object-fit: cover;
     margin: 5px 20px 5px 5px;
     float: left;
-    flex: 1;
+    /* flex: 1; */
 }
 
 .bird-name {
@@ -96,6 +96,11 @@ body {
 
 .bird-field p {
     margin-bottom: 3px;
+}
+
+.link-to-detail {
+    color: rgb(68, 68, 68);
+    text-decoration: none;
 }
 
 .count-birds {

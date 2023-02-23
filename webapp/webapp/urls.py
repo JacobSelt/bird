@@ -23,5 +23,6 @@ urlpatterns = [
     path('all-birds/', birds_views.list_all_birds, name="list_all_birds"),
     path('bird/', birds_views.search_bird, name="search_bird"),
     path('admin/', admin.site.urls),
+    path('most-frequent/', birds_views.show_most_frequent_birds, name="most_frequent"),
     path('<str:bird_name>/', birds_views.bird_detail, name="bird_detail"),
 ]

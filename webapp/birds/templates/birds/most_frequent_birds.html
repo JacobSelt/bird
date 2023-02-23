@@ -1,0 +1,31 @@
+{% extends 'base.html' %} 
+{% block content %} 
+{% load static %}
+
+<div class="wrapper">
+
+    <!-- HEADER -->
+
+    <h2 class="mb-4 text-center">Hier sind die am häufigsten vorkommenden Vögel aufgelistet:</h2>
+
+    <!-- SELECTION -->
+
+    <div class="info py-2 mb-2">
+        Here the selection shall happen.
+    </div>
+
+    <!-- TABLE -->
+    
+    <div>
+        <ol>
+            <div>{{freq}}</div>
+            {% for bird in keys %}
+                <li>{{bird}} {{freq.bird}}</li>
+            {% endfor %}
+        </ol> 
+    </div>
+    
+
+</div>
+
+{%endblock%}

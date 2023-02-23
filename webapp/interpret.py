@@ -5,6 +5,9 @@ import os
 import django
 import datetime
 from pydub import AudioSegment
+import noisereduce as nr
+from scipy.io import wavfile
+
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -72,6 +75,12 @@ def check_if_bird_recording_exist_with_prob(bird_name: str, probability: float) 
     with open("../recordings/recordings_birds/recordings_birds_prob.csv", "w") as file:
         birds = file.read().split("\n")
 
+def noise_reduction():
+    for file in os.listdir(INPUT_DIR):
+        rate, data = wavfile.read(f"{INPUT_DIR}/{file}")
+        reduced_noise = nr.reduce_noise(y=data, sr=rate)
+        wavfile.write(f"{INPUT_DIR}/{file}", rate, reduced_noise)
+
 
 def main():
     # Starting the process and setting starting time
@@ -86,6 +95,10 @@ def main():
             interval_time = 7200
         else:
             interval_time = 120
+
+        print("Removing noise")
+        noise_reduction()
+        print("Finished removing noise")
 
         # Analyze the files in the input folder
         subprocess.run(["python", "birds/birdnet/BirdNET-Analyzer/analyze.py",
@@ -125,12 +138,13 @@ def main():
                             probability=bird["prob"])
             bird_obj.save()
 
-            # Save the audio file if the probability of the recording is the highest ever
-            if not Bird.objects.filter(bird_name=bird["name"]).filter(probability__gt=bird["prob"]):
-                # TODO: Change the filter mechanism to a list
-                save_audio_snippet(bird["file_name"], bird["start"], bird["end"], bird["name"])
-            else:
-                pass
+
+            # # Save the audio file if the probability of the recording is the highest ever
+            # if not Bird.objects.filter(bird_name=bird["name"]).filter(probability__gt=bird["prob"]):
+            #     # TODO: Change the filter mechanism to a list
+            #     save_audio_snippet(bird["file_name"], bird["start"], bird["end"], bird["name"])
+            # else:
+            #     pass
 
 
         # Delete the ANALYZED input sound files

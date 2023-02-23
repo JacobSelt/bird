@@ -1,4 +1,8 @@
 from django.db import models
+from django.contrib import admin
+from django.utils import timezone
+from datetime import datetime
+
 
 
 class Bird(models.Model):
@@ -14,3 +18,12 @@ class Bird(models.Model):
 
     def __str__(self):
         return self.bird_name
+    
+    @admin.display(
+        boolean=True,
+        ordering='recorded_datetime',
+        description='Published recently?',
+    )
+    def was_published_recently(self):
+        now = timezone.now()
+        return now - datetime.timedelta(days=1) <= self.recorded_datetime <= now
