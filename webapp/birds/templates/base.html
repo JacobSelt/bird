@@ -68,6 +68,11 @@
                 >Alle bisherigen Vögel</a
               >
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'most_frequent' %}"
+                >Die häufigsten Vögel</a
+              >
+            </li>
           </ul>
           <form class="d-flex" role="search" action="/bird/" method="post">
             {% csrf_token %}

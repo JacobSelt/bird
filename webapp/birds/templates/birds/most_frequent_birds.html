@@ -17,12 +17,16 @@
     <!-- TABLE -->
     
     <div>
-        <ol>
-            <div>{{freq}}</div>
-            {% for bird in keys %}
-                <li>{{bird}} {{freq.bird}}</li>
-            {% endfor %}
-        </ol> 
+        <table class="table mr-auto" style="width: 30%;">
+            <tbody>
+                {% for index, bird in freq.items %}
+                    <tr>
+                        <td>{{index}}</td>
+                        <td>{{bird}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     
 

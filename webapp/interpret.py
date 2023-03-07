@@ -95,14 +95,20 @@ def main():
             interval_time = 7200
         else:
             interval_time = 120
+        
 
         print("Removing noise")
         noise_reduction()
         print("Finished removing noise")
 
+        # Get month for species detection
+        week = str(now.isocalendar().week)
+        if week > 48: week = 48
+
         # Analyze the files in the input folder
         subprocess.run(["python", "birds/birdnet/BirdNET-Analyzer/analyze.py",
-                        "--i", INPUT_DIR, "--o", OUTPUT_DIR, "--lat", "47.971", "--lon", "11.653"],
+                        "--i", INPUT_DIR, "--o", OUTPUT_DIR, "--lat", "47.971", "--lon",
+                         "11.653", "--week", week],
         ) #stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) TODO ent-comment
 
         # The files in OUTPUT_DIR are the ones already analyzed -> save them, so 

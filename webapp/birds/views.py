@@ -16,14 +16,14 @@ PROB_TO_SHOW = 0.7
 
 def get_date(hours_ago):
     time_x_hours_ago = timezone.now() - datetime.timedelta(hours=hours_ago)
-    return time_x_hours_ago.strftime("%Y-%m-%d %H:%M:%S")
+    return time_x_hours_ago
 
 
 def latest_birds(request):
     """Show the latest birds"""
 
     # TODO: when deploying change the hour count to 24
-    birds = Bird.objects.filter(recorded_datetime__gt=get_date(30)).filter(probability__gt=PROB_TO_SHOW)
+    birds = Bird.objects.filter(recorded_datetime__gt=get_date(10)).filter(probability__gt=PROB_TO_SHOW)
     birds = birds.order_by('-recorded_datetime')
     bird_df = pd.DataFrame(list(birds.values())) #TODO: make more efficient
 
@@ -33,41 +33,22 @@ def latest_birds(request):
 
     bird_list = []
 
-    for bird in bird_df["bird_name"].unique():
-        temp = bird_df.groupby(bird_df[bird_df["bird_name"] == bird]['recorded_datetime'].dt.hour).bird_name.count()
+    if len(bird_df) > 0:
+        for bird in bird_df["bird_name"].unique():
+            temp = bird_df.groupby(bird_df[bird_df["bird_name"] == bird]['recorded_datetime'].dt.hour).bird_name.count()
 
-        bird_list.append({
-            "name": bird,
-            "count": len(bird_df[bird_df["bird_name"] == bird]),
-            "dates": bird_df[bird_df["bird_name"] == bird]["recorded_datetime"],
-            "last_call": bird_df[bird_df["bird_name"] == bird]["recorded_datetime"].iloc[0],
-            "prob": 100*bird_df[bird_df["bird_name"] == bird]["probability"].mean(),
-            "img": f"birds/{bird}.jpg" , #TODO: somehow get access to image_path
-            "temp": temp,
-        })
+            bird_list.append({
+                "name": bird,
+                "count": len(bird_df[bird_df["bird_name"] == bird]),
+                "dates": bird_df[bird_df["bird_name"] == bird]["recorded_datetime"],
+                "last_call": bird_df[bird_df["bird_name"] == bird]["recorded_datetime"].iloc[0],
+                "prob": 100*bird_df[bird_df["bird_name"] == bird]["probability"].mean(),
+                "img": f"birds/{bird}.jpg" , #TODO: somehow get access to image_path
+                "temp": temp,
+            })
+    else:
+        pass
     
-    # The birds who sing for several times in a row should be aggregated in the
-    # view. So here bird_list is the list of (aggregated) birds
-
-    # for bird in birds:
-    #     i = len(bird_list)
-        
-    #     #Initialising bird_list
-    #     if i == 0:
-    #         bird_list.append(dict(model_to_dict(bird), quan=1,
-    #                          image_path=bird.image_path))
-            
-    #         # probability has to be string in order to concatenate the values
-    #         bird_list[i]["probability"] = str(bird_list[i]["probability"])
-    #     else:
-    #         if bird_list[i-1]["bird_name"] == bird.bird_name:
-    #             bird_list[i-1]["quan"] += 1
-    #             bird_list[i-1]["recorded_datetime"] = bird.recorded_datetime  # TODO: make the date better
-    #             bird_list[i-1]["probability"] += f', {bird.probability}'
-    #         else:
-    #             bird_list.append(dict(model_to_dict(bird), quan=1,
-    #                              image_path=bird.image_path))
-    #             bird_list[i]["probability"] = str(bird_list[i]["probability"])
 
     context = {
         'birds': bird_list,
@@ -91,6 +72,9 @@ def last_day(request):
 
     df = pd.DataFrame(data, columns=["Vogel", "Date"])
 
+    bird_count = len(df["Vogel"].unique())
+    if bird_count == 0: bird_count=10
+
     trace1 = go.Scatter(x=df["Date"],
                         y=df["Vogel"],
                         mode='markers',
@@ -101,9 +85,9 @@ def last_day(request):
 
     layout = go.Layout(xaxis={'title': 'Stunden'},
                        hovermode='x',
-                       margin={'t': 20, 'b': 10, 'r': 10, 'l': 20},
-                       height=700,
-                       font={"size": 10},
+                       margin={'t': 15, 'b': 10, 'r': 10, 'l': 10},
+                       height=30*bird_count,
+                       font={"size": 15},
                        modebar={"remove": ["zoom", "reset",
                                            "pan", "zoomin", "zoomout", "lasso", "autoscale", "select", "resetscale"]},
                        dragmode=False,
@@ -151,19 +135,7 @@ def bird_detail(request, bird_name):
 
         # Grouping by the hour and count the bird callings
         df = df.groupby(['month', 'hour'],sort=False,as_index=False).count() #df.groupby(df['recorded_datetime'].dt.hour).bird_name.count()
-        #print(df)
-
-        # # Drop the recorded_datetime column in order to add it in the next step
-        # # For some reaseon unknown to me, the index axis is the required 
-        # # recorded_datetime axis
-        # df = df.drop(["recorded_datetime"], axis=1)
-        # df.reset_index(inplace=True)
-
-        # for i in range(0, 25):
-        #     if i not in list(df["recorded_datetime"]):
-        #         df.loc[len(df.index)] = [i, 0, 0, 0, 0]
-
-        #df = df.sort_values(by="recorded_datetime")
+ 
 
         trace1 = go.Heatmap(
             x=df.hour,
@@ -173,10 +145,6 @@ def bird_detail(request, bird_name):
             zsmooth="best",
         )
 
-        # Making the plot
-        # trace1 = go.Scatter(x=df.recorded_datetime,
-        #                     y=df.bird_name,
-        #                     line_shape='linear')
 
         layout = go.Layout(xaxis={'title': 'Uhrzeit', "ticksuffix": ":00"},
                            yaxis={'title': 'Häufigkeit'},
@@ -218,7 +186,6 @@ def list_all_birds(request):
 
     output = pd.DataFrame(output)
     output = output.sort_values(by=[2])
-    print(output)
 
     context = {
         "birds": output.values
@@ -234,7 +201,6 @@ def show_most_frequent_birds(request):
     birds = pd.DataFrame(list(birds.values()))
 
     freq = birds["bird_name"].value_counts()
-    print(freq["Kohlmeise"])
 
     context = {
         "freq": freq,

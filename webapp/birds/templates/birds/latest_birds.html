@@ -12,18 +12,18 @@
 
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button bird-field collapsed" type="button" data-bs-toggle="collapse" 
-                            data-bs-target="#collapse{{bird.name}}" aria-expanded="false" aria-controls="collapseOne"
+                            data-bs-target="#collapse{{bird.name|cut:" "}}" aria-expanded="false" aria-controls="collapseOne"
                             style="position:relative;">
                             <img src="{% static bird.img %}" alt="{{bird.name}}">
                             <div>
                                 <p class="bird-name">{{ bird.name }}</p>
                                 <p class="bird-date">zuletzt {{ bird.last_call|time:"H:i" }}</p>
                             </div>
-                            <p class="fs-5 border border-dark rounded-pill px-2" style="position:absolute; left: 300px;">{{bird.count|center:"2"}}</p>
+                            <p class="fs-5 border border-dark rounded-pill px-2" style="position:absolute; left: 70%;">{{bird.count|center:"2"}}</p>
                         </button>
                     </h2>
 
-                    <div id="collapse{{bird.name}}" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div id="collapse{{bird.name|cut:" "}}" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <table class="table">
                                 <tbody>

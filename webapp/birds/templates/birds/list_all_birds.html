@@ -10,7 +10,7 @@
     <div class="my-2 bird-field py-2 px-2">
         {% for bird in birds %}
             <div class="text" onclick='location.href="{% url 'bird_detail' bird.2%}";' style="cursor: pointer;">
-                <div style="float: left; font-weight: bold; font-size: 20px;">{{ bird.2 }}</div>
+                <div style="float: left; font-weight: bold; font-size: 18px;">{{ bird.2|truncatechars:15 }}</div>
                 <div class="mt-1" style="float: right; color: grey;">{{ bird.3 }}</div>
                 <br><br>
             </div>
