@@ -257,8 +257,6 @@ cython_debug/
 
 # Ignoring the dev stuff used for developing and experimenting
 dev
-input/*
-output/*
 .DJANGO_SECRET_KEY
 data
 .sass-cache
