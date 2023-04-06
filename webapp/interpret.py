@@ -58,6 +58,7 @@ def get_time_recorded(file_name: str, recording_start: int) -> datetime.datetime
     
     return make_aware(date)
 
+
 def save_audio_snippet(file_name: str, recording_start: int, recording_end: int, bird_name: str):
     newAudio = AudioSegment.from_wav(f"{INPUT_DIR}/{file_name}")
     newAudio = newAudio[(recording_start * 1000):(recording_end * 1000)]

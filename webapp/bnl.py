@@ -5,32 +5,42 @@ from pprint import pprint
 import django
 from django.utils.timezone import make_aware
 import os
+from decouple import config
 
-from dotenv import load_dotenv
-load_dotenv()
+
+# from dotenv import load_dotenv
+# load_dotenv()
 
 # Set the django settings, so this script can access the django models
 os.environ['DJANGO_SETTINGS_MODULE'] = 'webapp.settings'
 django.setup()
 
+"""
+TODO: ent-comment when deploying!
+import sys
+sys.path.append("/bin/ffmpeg")"""
+
 from birds.models import Bird
 
 
-INPUT_DIR = "../recordings/input"   # where the recorded .wav files are stored
-TRANSLATE_FILE = "../recordings/translation2.txt"
+# ENV
+PATH = config("PATH", default="", cast=str)
+INPUT_DIR =  PATH + "../recordings/input"   # where the recorded .wav files are stored
+TRANSLATE_FILE = PATH +  "../recordings/translation2.txt"
 RECORD_INTERVAL_TIME = 60           # seconds
 
 
-def get_week():
-    # Get month for species detection
-    week = str(datetime.datetime.now().isocalendar().week)
+def get_week() -> int:
+    """Returns the current week\n
+    Weeks from 0 to 48 because this is obligatory by birdnetlib"""
+    week = datetime.now().isocalendar().week
     if week > 48:
         week = 48
     return week
 
 
 def load_translations() -> dict:
-    """Load the translations from TRANSLATE_FILE
+    """Load the translations from TRANSLATE_FILE\n
     
     Returns loaded dictionary of birds"""
 
@@ -46,40 +56,23 @@ def load_translations() -> dict:
         temp = line.split("_")
         transl_dict[temp[0]] = temp[1]
 
-
     return transl_dict
 
-    """
-    #OLD TRANSLATION DOC
 
-    global BIRD_DICT
-    with open(TRANSLATE_FILE, "r") as file:
-        lines = file.read().split("\n")
-    temp = []
-
-    for line in lines:
-        # filter(..) eliminates the empty empty items
-        temp.append(list(filter(None, line.split(","))))
-
-    return temp[:-1]
-    """
-    
-"""
 def translate_bird(lat_name: str) -> str:
-    #Translates the bird name from Latin to German
+    """Translate the bird"""
+
+    try:
+        translation = BIRD_DICT[lat_name]
+    except:
+        translation = lat_name
+        print(lat_name)
     
-    #Returns the German name and if there is a error, it returns 'Virginiauhu'
-
-    for line in BIRD_DICT:
-        if line[1] == en_name:
-            return line[0]
-
-    return en_name  # FIXME: return error code and act accordingly below
-"""
+    return translation
 
 
 def get_time_recorded(date_from_file: datetime, recording_start: int) -> datetime:
-    """Returns the exact time of bird call. 
+    """Returns the exact time of bird call. \n
     Gets the recording time from the file_name and the time passed from the recording start
     from recording_start
     """
@@ -106,7 +99,7 @@ def on_analyze_file_complete(recording_list):
         print(recording.filename, recording.date, recording.analyzer.name)
         for detection in recording.detections:
             bird_obj = Bird(bird_id=-1,
-                            bird_name=BIRD_DICT[detection["scientific_name"]],
+                            bird_name=translate_bird(detection["scientific_name"]),
                             recorded_datetime=get_time_recorded(recording.date, detection["start_time"]),
                             probability=detection["confidence"])
             bird_obj.save()

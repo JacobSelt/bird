@@ -32,6 +32,14 @@
         {% endautoescape %}
     </div>
 
+    <!-- CALENDER PLOT -->
+
+    <div>
+        {% autoescape off %}
+        {{ plot_calplot }}
+        {% endautoescape %}
+    </div>
+
     <!-- TABLE -->
     
     <div>
@@ -45,12 +53,12 @@
                 </tr>
             </thead>
             <tbody>
-                {% for bird in last_birds %}
+                {% for bird in last_birds.itertuples %}
                     <tr>
                         <th scope="row">{{forloop.counter}}</th>
                         <td>{{bird.recorded_datetime|date:'H:i'}}</td>
                         <td>{{bird.recorded_datetime|date:"SHORT_DATE_FORMAT"}}</td>
-                        <td>{{bird.probability}}</td>
+                        <td>{{bird.probability|floatformat:"2"}}</td>
                     </tr>
                 {% endfor %}
             </tbody>
