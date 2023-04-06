@@ -263,3 +263,4 @@ output/*
 data
 .sass-cache
 webapp/birds/birdnet/*
+webapp/webapp/settings.py
