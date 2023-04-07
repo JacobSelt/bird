@@ -25,8 +25,8 @@ from birds.models import Bird
 
 # ENV
 PATH_FOLDER = config("PATH_FOLDER", default="", cast=str)
-INPUT_DIR =  PATH_FOLDER + "../recordings/input"   # where the recorded .wav files are stored
-TRANSLATE_FILE = PATH_FOLDER + "../recordings/translation2.txt"
+INPUT_DIR =  PATH_FOLDER + "/recordings/input"   # where the recorded .wav files are stored
+TRANSLATE_FILE = PATH_FOLDER + "/recordings/translation2.txt"
 RECORD_INTERVAL_TIME = 60           # seconds
 
 
