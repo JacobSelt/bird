@@ -144,18 +144,39 @@ def bird_detail(request, bird_name):
 
         df["month"] = pd.DatetimeIndex(df["recorded_datetime"]).month_name()
         df["hour"] = pd.DatetimeIndex(df["recorded_datetime"]).hour
-        df["day"] = pd.DatetimeIndex(pd.DatetimeIndex(df["recorded_datetime"]).date)
+        df["week"] = pd.DatetimeIndex(df["recorded_datetime"]).week
+        #df["day"] = pd.DatetimeIndex(pd.DatetimeIndex(df["recorded_datetime"]).date)
 
-        df2 = df.groupby(by=df["day"]).bird_name.count().reset_index()
+        df2 = df.groupby(by=df["week"]).bird_name.count()
+        print(df2)
 
         # Grouping by the hour and count the bird callings
         df = df.groupby(['month', 'hour'],sort=False,as_index=False).count() #df.groupby(df['recorded_datetime'].dt.hour).bird_name.count()
 
-        fig = calplot(
-            df2,
-            x="day",
-            y="bird_name",
-            gap=0,
+        # fig = calplot(
+        #     df2,
+        #     x="day",
+        #     y="bird_name",
+        #     gap=0,
+        # )
+
+
+        dict_weeks = dict()
+
+        for i in range(1, 53):
+            try:
+                dict_weeks[i] = df2[i]
+            except KeyError:
+                dict_weeks[i] = 0
+
+
+        fig = go.Figure(go.Bar(
+            x=[x for x in range(1, 53)],
+            y=list(dict_weeks.values()),
+            hovertemplate="Anzahl: %{y}"
+        ))
+        fig.update_traces(
+            marker_color="rgb(0, 215, 29)"
         )
  
         trace1 = go.Heatmap(
