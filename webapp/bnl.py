@@ -1,5 +1,5 @@
 from birdnetlib.watcher import DirectoryWatcher
-from birdnetlib.analyzer_lite import LiteAnalyzer
+from birdnetlib.analyzer import Analyzer #LiteAnalyzer
 from datetime import datetime, timedelta
 from pprint import pprint
 import django
@@ -126,8 +126,7 @@ def preanalyze(recording):
 
 
 print("Starting Analyzers")
-analyzer_lite = LiteAnalyzer()
-#analyzer = Analyzer()
+analyzer_lite = Analyzer()
 
 
 print("Starting Watcher")
