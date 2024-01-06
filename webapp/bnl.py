@@ -82,29 +82,26 @@ def get_time_recorded(date_from_file: datetime, recording_start: int) -> datetim
     return make_aware(date)
 
 def on_analyze_complete(recording):
-    """print("on_analyze_complete")
     # Each analyzation as it is completed.
-    print(recording.path, recording.analyzer.name)
-    pprint(recording.detections)"""
+    pass
 
+def save_audio_file(detection):
     pass
 
 
 def on_analyze_file_complete(recording_list):
-    print("---------------------------")
-    print("on_analyze_file_complete")
-    print("---------------------------")
     # All analyzations are completed. Results passed as a list of Recording objects.
     for recording in recording_list:
-        print(recording.filename, recording.date, recording.analyzer.name)
         for detection in recording.detections:
             bird_obj = Bird(bird_id=-1,
                             bird_name=translate_bird(detection["scientific_name"]),
                             recorded_datetime=get_time_recorded(recording.date, detection["start_time"]),
                             probability=detection["confidence"])
+            
+            if detection["confidence"] > 0.95:
+                save_audio_file(detection)
+
             bird_obj.save()
-        pprint(recording.detections)
-        print("---------------------------")
 
         # Deleting the analyzed file
         os.remove(f"{INPUT_DIR}/{recording.filename}")
@@ -118,18 +115,13 @@ def on_error(recording, error):
 def preanalyze(recording):
     # Used to modify the recording object before analyzing.
     filename = recording.filename
-    # 2022-08-15-birdnet-21:05:51.wav, as an example, use BirdNET-Pi's preferred format for testing.
     dt = datetime.strptime(filename, "%H_%M_%S_%d_%m_%Y.wav")
-    # Modify the recording object here as needed.
-    # For testing, we're changing the date. We could also modify lat/long here.
     recording.date = dt
 
 
-print("Starting Analyzers")
 analyzer_lite = Analyzer()
 
 
-print("Starting Watcher")
 directory = INPUT_DIR
 watcher = DirectoryWatcher(
     directory,

@@ -2946,6 +2946,7 @@ Surniculus lugubris_Geradschwanz-Drongokuckuck
 Sylvia abyssinica_Hochland-Grasmücke
 Sylvia atricapilla_Mönchsgrasmücke
 Sylvia borin_Gartengrasmücke
+Sylvia curruca_Klappergrasmücke
 Sylvietta rufescens_Langschnabelsylvietta
 Sylvietta virens_Grünmantelsylvietta
 Sylvietta whytii_Rotzügelsylvietta

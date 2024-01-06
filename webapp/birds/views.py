@@ -8,6 +8,7 @@ import pandas as pd
 from plotly_calplot import calplot
 # from django.forms.models import model_to_dict
 from decouple import config
+import numpy as np
 
 
 import plotly.graph_objects as go
@@ -140,65 +141,75 @@ def bird_detail(request, bird_name):
 
     # Hourly diagram of when bird is calling
     if len(df):
-        
-
-        df["month"] = pd.DatetimeIndex(df["recorded_datetime"]).month_name()
         df["hour"] = pd.DatetimeIndex(df["recorded_datetime"]).hour
-        df["week"] = pd.DatetimeIndex(df["recorded_datetime"]).week
-        #df["day"] = pd.DatetimeIndex(pd.DatetimeIndex(df["recorded_datetime"]).date)
+        df["week"] = pd.to_datetime(df["recorded_datetime"]).dt.isocalendar().week
 
-        df2 = df.groupby(by=df["week"]).bird_name.count()
-        print(df2)
+        df = df.groupby(['week', 'hour'], sort=True, as_index=False).count()[
+            ['week', 'hour', "bird_name"]]
 
-        # Grouping by the hour and count the bird callings
-        df = df.groupby(['month', 'hour'],sort=False,as_index=False).count() #df.groupby(df['recorded_datetime'].dt.hour).bird_name.count()
+        # Make a blank df to fill the gaps
+        weeks_zeros = np.sort(np.array([np.arange(1, 53) for _ in range(24)]).flatten())
+        hours_zeros = np.array([np.arange(1,25) for _ in range(52)]).flatten()
+        zeros = np.zeros(1248)
+        data = {"week": weeks_zeros, "hour": hours_zeros, "bird_name": zeros}
+        df_zeros = pd.DataFrame(data=data)
 
-        # fig = calplot(
-        #     df2,
-        #     x="day",
-        #     y="bird_name",
-        #     gap=0,
-        # )
-
-
-        dict_weeks = dict()
-
-        for i in range(1, 53):
-            try:
-                dict_weeks[i] = df2[i]
-            except KeyError:
-                dict_weeks[i] = 0
-
-
-        fig = go.Figure(go.Bar(
-            x=[x for x in range(1, 53)],
-            y=list(dict_weeks.values()),
-            hovertemplate="Anzahl: %{y}"
-        ))
-        fig.update_traces(
-            marker_color="rgb(0, 215, 29)"
-        )
- 
-        trace1 = go.Heatmap(
+        # Combine the dfs
+        df = df_zeros.merge(df, how="left", on=["week", "hour"]) \
+                    .drop("bird_name_x", axis=1) \
+                    .rename(columns={"bird_name_y":"freq"}) \
+                    .fillna(0)
+            
+        heatmap_trace = go.Heatmap(
             x=df.hour,
-            y=df.month,
-            z=df.bird_name,
+            y=df.week,
+            z=df.freq,
             connectgaps=True,
             zsmooth="best",
+            colorscale='Picnic',
+            showscale=False,
         )
 
-        layout = go.Layout(xaxis={'title': 'Uhrzeit', "ticksuffix": ":00"},
-                           yaxis={'title': 'Häufigkeit'},
+        fig = go.Figure(go.Bar(
+            x=df.week.unique(),
+            y=df.set_index("week")["freq"].groupby("week").sum(),
+            marker_color="rgb(0, 215, 29)",
+        ))
+
+
+        layout = go.Layout(#xaxis={'title': 'Uhrzeit', "ticksuffix": ":00"},
+                           #yaxis={'title': 'Häufigkeit'},
                            hovermode='x',
                            margin={'t': 20, 'b': 10, 'r': 10, 'l': 20},
-                           font={"size": 15},
+                           font={"size": 10},
                            modebar={"remove": ["zoom", "reset",
                                                "pan", "zoomin", "zoomout", "lasso", "autoscale", "select", "resetscale"]},
                            dragmode=False,
                            paper_bgcolor="#f3f3f3"
                            )
-        figure = go.Figure(data=trace1, layout=layout)
-        plot_div = figure.to_html(include_plotlyjs=False)
+        figure = go.Figure(data=heatmap_trace, layout=layout)
+        figure.update_yaxes(autorange="reversed")
+
+        """ADD LINES TO TIME"""
+        present_week = datetime.datetime.now().isocalendar().week
+
+        fig.add_vline(
+            x=present_week,
+            line_width=1,
+            line_color="red",
+            annotation_text="Aktuelle Woche",
+        )
+        hour = datetime.datetime.now().hour
+        figure.add_shape(
+            type="circle",
+            line_color='orange',
+            x0=hour-1,
+            y0=present_week,
+            x1=hour,
+            y1=present_week+1,
+        )
+
+        heatmap_plot = figure.to_html(include_plotlyjs=False)
 
         fig.update_layout(
             paper_bgcolor="#f3f3f3",
@@ -208,9 +219,10 @@ def bird_detail(request, bird_name):
             margin={'t': 20, 'b': 10, 'r': 10, 'l': 20},
             height=170
         )
-        plot_calplot = fig.to_html(include_plotlyjs=False)
+        week_plot = fig.to_html(include_plotlyjs=False)
     else:
-        plot_div = ""
+        heatmap_plot = ""
+        week_plot = ""
 
     # TODO: display one example of how the bird is calling
 
@@ -218,9 +230,9 @@ def bird_detail(request, bird_name):
         'bird_pic_url': f"birds/{bird_name}.jpg",
         'bird_name': bird_name,
         'last_birds': last_birds,
-        'plot_div': plot_div,
+        'plot_div': heatmap_plot,
         'bird_audio': f"recordings_birds/{bird_name}.mp3",
-        'plot_calplot': plot_calplot,
+        'plot_calplot': week_plot,
     }
 
     return render(request, "birds/bird_detail.html", context=context)
@@ -229,6 +241,8 @@ def bird_detail(request, bird_name):
 def list_all_birds(request):
     birds = Bird.objects.all().filter(probability__gt=PROB_TO_SHOW)
     birds = pd.DataFrame(list(birds.values()))
+
+    #TODO: make faster
 
 
     unique_birds = birds.bird_name.unique()
